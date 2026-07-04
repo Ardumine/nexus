@@ -1,5 +1,5 @@
 using HCore.Modules.Base;
-using HCore.Modules.Robotics;
+using HCore.Packages.Nexus.SelfTest;
 using KASerializer;
 using AFCP;
 using AFCP.Protocol;
@@ -126,20 +126,20 @@ public sealed class AfcpImplement : BaseImplement, IAfcpKernel, IDriverModule, I
 
         try
         {
-            // 1. Ensure the lidar demo producer is running (spawn+run if absent).
+            // 1. Ensure the demo producer is running (spawn+run if absent).
             try
             {
                 var lidar = Host.GetModuleInterface<IRunnable>("lidar");
-                Log("lidar already running.");
+                Log("producer already running.");
             }
             catch
             {
-                Log("spawning lidar...");
-                var lidar = Host.Spawn<IRunnable>("HCore.Packages.Sensor.Lidar", "lidar");
+                Log("spawning producer...");
+                var lidar = Host.Spawn<IRunnable>("HCore.Packages.Nexus.TestProducer", "lidar");
                 lidar.Run();
                 spawnedLidar = true;
                 Thread.Sleep(300);
-                Log("lidar running.");
+                Log("producer running.");
             }
 
             // 2. Serve.
@@ -172,9 +172,9 @@ public sealed class AfcpImplement : BaseImplement, IAfcpKernel, IDriverModule, I
             Log("--- cat again (fresh frame) ---");
             Log(_kernelVfs.GetFile("/selftest/proc/lidar/scan_data").ReadString().TrimEnd());
 
-            // 8. MKCall (Layer 3) — typed remote proxy via ILidar
-            Log("--- MKCall: GetModuleInterface<ILidar>(/selftest/proc/lidar) ---");
-            var remoteLidar = Host.GetModuleInterface<ILidar>("/selftest/proc/lidar");
+            // 8. MKCall (Layer 3) — typed remote proxy via ITestProbe
+            Log("--- MKCall: GetModuleInterface<ITestProbe>(/selftest/proc/lidar) ---");
+            var remoteLidar = Host.GetModuleInterface<ITestProbe>("/selftest/proc/lidar");
             Log("got remote proxy.");
 
             Log("--- MKCall: SetFrameRate(50) ---");
@@ -197,7 +197,7 @@ public sealed class AfcpImplement : BaseImplement, IAfcpKernel, IDriverModule, I
             Log("--- MKCall: failing call on /selftest/proc/nope ---");
             try
             {
-                var nope = Host.GetModuleInterface<ILidar>("/selftest/proc/nope");
+                var nope = Host.GetModuleInterface<ITestProbe>("/selftest/proc/nope");
                 nope.GetFrameRate();
                 throw new InvalidOperationException("expected a remote call on a missing instance to throw.");
             }
@@ -353,8 +353,8 @@ public sealed class AfcpImplement : BaseImplement, IAfcpKernel, IDriverModule, I
 
             // 11. Transparent typed subscribe via demo consumer
             Log("--- transparent subscribe via demo consumer (/selftest/proc/lidar/scan_data) ---");
-            _kernelVfs.CreateFile("/tmp/remote_slam_target", Encoding.UTF8.GetBytes("/selftest/proc/lidar/scan_data"));
-            Host.Spawn<IRunnable>("HCore.Packages.Sensor.RemoteSlam", "rslam").Run();
+            _kernelVfs.CreateFile(TestConsumerImplement.TargetFile, Encoding.UTF8.GetBytes("/selftest/proc/lidar/scan_data"));
+            Host.Spawn<IRunnable>("HCore.Packages.Nexus.TestConsumer", "rslam").Run();
             spawnedConsumer = true;
             Thread.Sleep(450);
 
@@ -388,7 +388,7 @@ public sealed class AfcpImplement : BaseImplement, IAfcpKernel, IDriverModule, I
             {
                 try { Host.Kill("rslam"); Log("killed rslam."); } catch { }
             }
-            try { _kernelVfs.DeleteFile("/tmp/remote_slam_target"); } catch { }
+            try { _kernelVfs.DeleteFile(TestConsumerImplement.TargetFile); } catch { }
             try { Log(Unmount("/selftest")); } catch { }
             try { Log(StopServe()); } catch { }
             if (spawnedLidar)

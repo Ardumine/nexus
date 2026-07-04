@@ -11,8 +11,7 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <ProjectReference Include="HCore.Modules.Robotics/HCore.Modules.Base/HCore.Modules.Base.csproj" />
-        <ProjectReference Include="HCore.Modules.Robotics/HCore.Modules.Robotics.csproj" />
+        <ProjectReference Include="HCore.Modules.Base\HCore.Modules.Base.csproj" />
         <ProjectReference Include="kaserializer\src\KASerializer\KASerializer.csproj" />
     </ItemGroup>
 
@@ -30,8 +29,8 @@
     <!-- Base + Robotics contracts come from the hrobotics submodule (which bundles
          Base). Keep their sources out of this package's compile. -->
     <ItemGroup>
-        <Compile Remove="HCore.Modules.Robotics/**/*.cs" />
-        <None Remove="HCore.Modules.Robotics/**" />
+        <Compile Remove="HCore.Modules.Base/**/*.cs" />
+        <None Remove="HCore.Modules.Base/**" />
         <Compile Remove="kaserializer/**/*.cs" />
         <None Remove="kaserializer/**" />
     </ItemGroup>
