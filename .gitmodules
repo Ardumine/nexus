@@ -1,3 +1,6 @@
 [submodule "HCore.Modules.Robotics"]
 	path = HCore.Modules.Robotics
 	url = https://github.com/Ardumine/hrobotics.git
+[submodule "kaserializer"]
+	path = kaserializer
+	url = https://github.com/Ardumine/kaserializer.git

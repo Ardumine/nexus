@@ -13,7 +13,7 @@
     <ItemGroup>
         <ProjectReference Include="HCore.Modules.Robotics/HCore.Modules.Base/HCore.Modules.Base.csproj" />
         <ProjectReference Include="HCore.Modules.Robotics/HCore.Modules.Robotics.csproj" />
-        <ProjectReference Include="..\kaserializer\src\KASerializer\KASerializer.csproj" />
+        <ProjectReference Include="kaserializer\src\KASerializer\KASerializer.csproj" />
     </ItemGroup>
 
     <ItemGroup>
@@ -32,5 +32,7 @@
     <ItemGroup>
         <Compile Remove="HCore.Modules.Robotics/**/*.cs" />
         <None Remove="HCore.Modules.Robotics/**" />
+        <Compile Remove="kaserializer/**/*.cs" />
+        <None Remove="kaserializer/**" />
     </ItemGroup>
 </Project>
