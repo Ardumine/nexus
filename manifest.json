@@ -1,0 +1,11 @@
+{
+  "name": "HCore.Packages.Nexus",
+  "version": "1.0.0",
+  "baseVersion": "1.0.0",
+  "description": "AFCP connector — the HCore driver module that serves the local VFS over AFCP and mounts remote peers' trees (Layers 1-3: VFS mount/read/write, subscribe-push, MKCall proxy).",
+  "provides": {
+    "modules": [
+      { "name": "HCore.Packages.Nexus.Nexus", "interface": "HCore.Modules.Base.IAfcpKernel" }
+    ]
+  }
+}
