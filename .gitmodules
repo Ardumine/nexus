@@ -1,0 +1,3 @@
+[submodule "HCore.Modules.Base"]
+	path = HCore.Modules.Base
+	url = https://github.com/Ardumine/hcore-modules-base.git
